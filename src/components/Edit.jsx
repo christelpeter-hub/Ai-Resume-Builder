@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { FaXmark } from 'react-icons/fa6';
+import jobRole from '../assets/jobRole.json'
 
 const style = {
   position: 'absolute',
@@ -25,11 +26,15 @@ const style = {
   p: 4,
 };
 
-function Edit() {
+function Edit({resumeDetails,setresumeDetails}) {
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const removeSkill=(skill)=>{
+    setresumeDetails({...resumeDetails,skills:resumeDetails.skills.filter(item=>item!=skill)})
+  }
 
   return (
    <div>
@@ -47,42 +52,48 @@ function Edit() {
           <box id="modal-modal-description" sx={{ mt: 2 }}>
             <div>
           <h3>Personal Details</h3>
-          <div className="p-3 row">
-            <TextField id="standard-basic-name" label="FullName" variant="standard" />
-            <TextField id="standard-basic-loc" label="Location" variant="standard" />
+         <div className="p-3 row">
+            <TextField value={resumeDetails.fullName} onChange={e=>setresumeDetails({...resumeDetails,fullName:e.target.value})} id="standard-basic-name" label="FullName" variant="standard" />
+            <TextField value={resumeDetails.location} onChange={e=>setresumeDetails({...resumeDetails,location:e.target.value})}  id="standard-basic-loc" label="Location" variant="standard" />
               <FormControl variant='standard'>
         <InputLabel id="demo-simple-select-label">Choose Job Title</InputLabel>
-        <Select
+        <Select value={resumeDetails.job} onChange={e=>setresumeDetails({...resumeDetails,job:e.target.value})}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           label="Job"
         >
-          <MenuItem value={'Job'}>Job</MenuItem>
+          {
+            jobRole.jobRoles.map(job=>(
+            <MenuItem key={job} value={job}>{job}</MenuItem>
           
+            ))
+    }
         </Select>
       </FormControl>
           </div>
         </div>
 
           <div>
-                  <h3>Contact Details</h3>
-                  <div className="p-3 row">
-                    <TextField id="standard-basic-email" label="Email" variant="standard" />
-                    <TextField id="standard-basic-num" label="Contact Number" variant="standard" />
-                    <TextField id="standard-basic-linkedin" label="Linkedin Link" variant="standard" />
-                    <TextField id="standard-basic-github" label="Github Link" variant="standard" />
-                    
-                  </div>
-                </div>
-
-                 <div>
-                <h3>Education Details</h3>
-                 <div className="p-3 row">
-                  <TextField id="standard-basic-degree" label="Bachelor's Degree" variant="standard" />
-                  <TextField id="standard-basic-college" label="College/University Name" variant="standard" />
-                   <TextField id="standard-basic-year" label="Year Of Graduation" variant="standard" />           
+                   <h3>Contact Details</h3>
+                   <div className="p-3 row">
+                     <TextField value={resumeDetails.email} onChange={e=>setresumeDetails({...resumeDetails,email:e.target.value})}  id="standard-basic-email" label="Email" variant="standard" />
+                     <TextField value={resumeDetails.phone} onChange={e=>setresumeDetails({...resumeDetails,phone:e.target.value})}  id="standard-basic-num" label="Contact Number" variant="standard" />
+                     <TextField value={resumeDetails.linkedin} onChange={e=>setresumeDetails({...resumeDetails,linkedin:e.target.value})}  id="standard-basic-linkedin" label="Linkedin Link" variant="standard" />
+                     <TextField value={resumeDetails.github} onChange={e=>setresumeDetails({...resumeDetails,github:e.target.value})}  id="standard-basic-github" label="Github Link" variant="standard" />
+                     
                    </div>
-                  </div>
+                 </div>
+
+                <div>
+                         <h3>Education Details</h3>
+                          <div className="p-3 row">
+                           <TextField value={resumeDetails.degree} onChange={e=>setresumeDetails({...resumeDetails,degree:e.target.value})}  id="standard-basic-degree" label="Bachelor's Degree" variant="standard" />
+                           <TextField value={resumeDetails.college} onChange={e=>setresumeDetails({...resumeDetails,college:e.target.value})}  id="standard-basic-college" label="College/University Name" variant="standard" />
+                           <TextField value={resumeDetails.year} onChange={e=>setresumeDetails({...resumeDetails,year:e.target.value})}  id="standard-basic-year" label="Year Of Graduation" variant="standard" />
+                           
+                           
+                         </div>
+                       </div>
 
                   <div>
                     <h3>Skills</h3>
@@ -94,14 +105,20 @@ function Edit() {
 
                     <h6>Added skills</h6>
                     <div className="p-3 d-flex justify-content-between flex-wrap">
-                      <Button variant='contained' sx={{backgroundColor:'#c19868'}}>Skill<FaXmark className='ms-2'/></Button>
+                      {
+                        resumeDetails?.skills?.map(skill=>(
+                    <Button onClick={()=>removeSkill(skill)} key={skill} variant='contained' sx={{backgroundColor:'#c19868'}} className='my-1'>{skill}<FaXmark className='ms-2'/></Button>
+                        )
+
+                        )
+                      }
                     </div>
                   </div>
 
                   <div>
                     <h3>summary</h3>
                     <div className="p-3 row">
-                      <TextField id="summary" label="summary" multiline variant='standard'/>
+                      <TextField value={resumeDetails.summary} onChange={e=>setresumeDetails({...resumeDetails,summary:e.target.value})} id="summary" label="summary" multiline variant='standard'/>
                     </div>
                   </div>
 

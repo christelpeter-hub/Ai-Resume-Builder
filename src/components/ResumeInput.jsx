@@ -13,22 +13,21 @@ import Select from '@mui/material/Select';
 import jobRole from '../assets/jobRole.json'
 import jobSkills from '../assets/jobSkills.json'
 import summaries from '../assets/summaries.json'
-
+import { saveResumeAPI } from '../services/apiService';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const steps = ['Basic Informations', 'Contact Details', 'Educational Details','Review & Submit'];
 
 
-function ResumeInput(){
+function ResumeInput({resumeDetails,setresumeDetails}){
 
-  const [resumeDetails,setresumeDetails] = React.useState({
-    FullName:"",location:"",job:"",email:"",phone:"",linkedin:"",github:"",degree:"",college:"",year:"",skills:[],summary:""
-
-  })
+  
   console.log(resumeDetails);
   
- 
+ const navigate=useNavigate()
   const [activeStep, setActiveStep] = React.useState(0);
  
   
@@ -46,7 +45,7 @@ function ResumeInput(){
         <div>
           <h3>Personal Details</h3>
           <div className="p-3 row">
-            <TextField value={resumeDetails.FullName} onChange={e=>setresumeDetails({...resumeDetails,FullName:e.target.value})} id="standard-basic-name" label="FullName" variant="standard" />
+            <TextField value={resumeDetails.fullName} onChange={e=>setresumeDetails({...resumeDetails,fullName:e.target.value})} id="standard-basic-name" label="FullName" variant="standard" />
             <TextField value={resumeDetails.location} onChange={e=>setresumeDetails({...resumeDetails,location:e.target.value})}  id="standard-basic-loc" label="Location" variant="standard" />
               <FormControl variant='standard'>
         <InputLabel id="demo-simple-select-label">Choose Job Title</InputLabel>
@@ -109,6 +108,26 @@ function ResumeInput(){
     setresumeDetails({...resumeDetails,skills:jobSkills[resumeDetails.job],summary:summaries[resumeDetails.job]})
     handleNext()
   }
+
+  const handlesaveResume=async()=>{
+    const{fullName,location,job,email,phone,github,linkedin,degree,college,year,skills,summary}=resumeDetails
+    if(fullName && location && job && email && phone && github && linkedin && degree && college && year && skills.length>0 &&summary){
+     //api call
+     const response = await saveResumeAPI(resumeDetails)
+     console.log(response);
+     if(response.status==201){
+      toast.success("Resume added successfully!!!!")
+      const resumeId=response.data.id
+    setTimeout(() => {
+       navigate(`/resume/${resumeId}`)
+    }, 2500);
+     }
+     
+
+    }else{
+      toast.warning("please fill the form completely!!!!")
+    }
+  }
   
   return (
     <Box sx={{ width: '100%' }}>
@@ -130,7 +149,7 @@ function ResumeInput(){
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button >
+            <Button onClick={handlesaveResume} >
               FINISH
             </Button>
           </Box>

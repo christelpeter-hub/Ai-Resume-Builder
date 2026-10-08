@@ -29,7 +29,10 @@ function Header() {
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1,fontFamily:'sans-serif' }}>
          <Link to={'/'} className='text-light text-decoration-none'> AI rBuilder</Link>
-          </Typography>
+          </Typography >
+           <Link to={'/all-resumes'} className='text-light text-decoration-none'>ALL RESUMES</Link>
+           <Link to={'/downloads'} className='text-light text-decoration-none mx-5'>ALL DOWNLOADS</Link>
+           
          <Tooltip title={aboutUsContent}><Button color="inherit">ABOUT US </Button></Tooltip>
         </Toolbar>
       </AppBar>
