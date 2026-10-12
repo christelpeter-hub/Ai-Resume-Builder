@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { FaTrash } from 'react-icons/fa6'
+import { FaBackward, FaForward, FaTrash } from 'react-icons/fa6'
 import { Link } from 'react-router-dom'
 import { deleteResumeAPI, getAllResumeAPI } from '../services/apiService'
 import { FaSearch } from 'react-icons/fa'
@@ -12,8 +12,15 @@ function Saved() {
   const [allResumes,setAllResumes]=useState([])
   const [searchKey,setSearchkey]=useState("")
   const [dummyAllResumes,setDummyAllResumes]=useState([])
+  const [currentPage,setCurrentPage]=useState(1);
+  const rowPerPage=4;
+  const lastIndexOfCurrentPage=currentPage*rowPerPage
+  const firstIndexOfCurrentPage=lastIndexOfCurrentPage-rowPerPage
+  const currentResumes=allResumes.slice(firstIndexOfCurrentPage,lastIndexOfCurrentPage)
+  const totalPages=Math.ceil(allResumes.length/rowPerPage)
 
-  console.log(searchKey);
+
+  //console.log(searchKey);
 
   useEffect(()=>{
    searchKey==""? getAllResumes():searchCandidate()
@@ -47,7 +54,7 @@ function Saved() {
       <h1>All Saved Resumes </h1>
       <p style={{textAlign:'justify'}} className="my-5">All resume submitted to the platform in one place ,allowing administrators or recruiters to Efficently view,search,filter,and manage  candidate profiles.It provides a quick overview of available  and thier key details,making the recuritement and candidate-selection process more organized and efficent.</p>
       <div className="d-flex justify-content-center align-items-center w-50">
-        <input onChange={(e)=>setSearchkey(e.target.value)} type="text" placeholder='Search candidate by their job role ' className="form-control"/>
+        <input onChange={(e)=>{setSearchkey(e.target.value);setCurrentPage(1);}} type="text" placeholder='Search candidate by their job role ' className="form-control"/>
         <FaSearch style={{marginLeft:'-30px'}}/>
       </div>
       <table className="my-5 table table-hover table-striped">
@@ -61,8 +68,8 @@ function Saved() {
         </thead>
         <tbody>
         {
-          allResumes?.length>0?
-          allResumes?.map((resume,index)=>(  
+          currentResumes?.length>0?
+          currentResumes?.map((resume,index)=>(  
           <tr key={resume?.id}>
             <td>{index+1}</td>
             <td> <Link to={`/resume/${resume?.id}`}>{resume?.fullName.toUpperCase()}</Link></td>
@@ -75,6 +82,17 @@ function Saved() {
         }
         </tbody>
       </table>
+      <div className="d-flex align-items-center">
+        <button className='btn' onClick={()=>setCurrentPage(currentPage-1)} disabled={currentPage==1}>
+         <FaBackward/>
+        </button>
+
+        {currentPage} of {totalPages}
+        <button className='btn' onClick={()=>setCurrentPage(currentPage+1)} disabled={currentPage==totalPages || totalPages==0}>
+
+          <FaForward/>
+        </button>
+      </div>
     </div>
   )
 }
